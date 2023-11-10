@@ -1,14 +1,13 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TimerTrigger : MonoBehaviour
 {
-    void OnTriggerExit(Collider collider)
+    // Activat timer on trigger exit 
+    void OnTriggerExit(Collider Player)
     {
-        if (collider.tag == "Player")
-        {
-            Timer timer = collider.GetComponent<Timer>();
-            timer.enabled = true;
-            timer.StartTimer();
-        }
+        Player.GetComponent<Timer>().enabled = true;
     }
 }

@@ -5,31 +5,16 @@ using UnityEngine.UI;
 
 public class WinTrigger : MonoBehaviour
 {
-    public Transform player;
-    private Timer TimerCMP;
-    private Text textTimer;
-    
-    
+    public Text TimerText;
+
+    public GameObject WinCanvas;
+
     // Start is called before the first frame update
-    void Start()
+    void OnTriggerEnter(Collider Player)
     {
-        TimerCMP = player.GetComponent<Timer>();
-        textTimer = TimerCMP.timeText;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == "Player")
-        {
-            Win();
-        }
-    }
-
-    public void Win()
-    {
-        textTimer.color = Color.green;
-        textTimer.fontSize = 90;
-
-        TimerCMP.StopTimer();
+        Player.GetComponent<Timer>().enabled = false;
+        TimerText.color = Color.green;
+        TimerText.fontSize = 60;
+        WinCanvas.SetActive(true);
     }
 }

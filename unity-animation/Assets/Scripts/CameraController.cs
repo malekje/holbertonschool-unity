@@ -4,29 +4,38 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    private Vector3 offset;
+    private Vector3 cameraOffset;
+
     public Transform player;
-    //private float rotation = 0f;
-    public float turnSpeed = 5f;
 
+    public float sensitivity = 0.5f;
 
+    public bool isInverted;
+
+    // Start is called before the first frame update
     void Start()
     {
-        offset = transform.position - player.position;
+        cameraOffset = transform.position - player.position;
     }
+
     // Update is called once per frame
-    void LateUpdate()
+    void Update()
     {
-        offset = Quaternion.AngleAxis(Input.GetAxis("Mouse X") * turnSpeed, Vector3.up) * offset;
+        if (PlayerPrefs.GetInt("inverted") == 1)
+        {
+            cameraOffset = Quaternion.AngleAxis(Input.GetAxis("Mouse X") * sensitivity, Vector3.up) * Quaternion.AngleAxis((Input.GetAxis("Mouse Y") * -1)* sensitivity, Vector3.left) * cameraOffset;
+            transform.position = player.position + cameraOffset;
 
-        Vector3 desiredPosition = player.position + offset;
-        transform.position = desiredPosition;
-        transform.LookAt(player.position);
+            transform.LookAt(player.position);
+        }
+        else
+        {
+            cameraOffset = Quaternion.AngleAxis(Input.GetAxis("Mouse X") * sensitivity, Vector3.up) * Quaternion.AngleAxis(Input.GetAxis("Mouse Y") * sensitivity, Vector3.left) * cameraOffset;
+            transform.position = player.position + cameraOffset;
 
-        // Rotate the player
-        player.Rotate(Input.GetAxis("Mouse X") * turnSpeed * Vector3.up);
-
-
-
+            transform.LookAt(player.position);
+        }
     }
+
+
 }

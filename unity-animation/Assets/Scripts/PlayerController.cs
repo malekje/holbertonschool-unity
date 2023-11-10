@@ -1,47 +1,82 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-/// <summary>
-/// Class for player controler
-/// </summary>
+
 public class PlayerController : MonoBehaviour
 {
-    public CharacterController charCon;
-    public float speed = 6f;
-    private float gravity = -9.8f * 2;
-    private Vector3 gravityVector = Vector3.zero;
-    public float maxJumpHeight = 3f;
-    private bool isGrounded = true;
-    /// <summary>
-    /// Fixed updates for physics
-    /// </summary>
-    void FixedUpdate()
+    [SerializeField]
+    private float speed = 5f;
+    [SerializeField]
+    private float gravity = 9f;
+    [SerializeField]
+    private float jumpSpeed = 5f;
+
+    [SerializeField]
+    Transform cameraTransform;
+
+    public Animator animator;
+
+    private CharacterController controller;
+
+    private float directionY;
+
+
+    // Start is called before the first frame update
+    void Start()
     {
-        isGrounded = charCon.isGrounded;
-        // Move horizontally and forward backward
-        float xaxis = Input.GetAxis("Horizontal");
-        float zaxis = Input.GetAxis("Vertical");
-        Vector3 direction = transform.right * xaxis + transform.forward * zaxis;
+        controller = GetComponent<CharacterController>();
+    }
 
-        charCon.Move(direction * speed * Time.deltaTime);
+    // Update is called once per frame
+    void Update()
+    {
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
 
-        // Handle Jump
-        if (Input.GetKey(KeyCode.Space) && isGrounded)
+        Vector3 direction = new Vector3(horizontalInput, 0, verticalInput);
+
+        if (controller.isGrounded)
         {
-            gravityVector.y = Mathf.Sqrt(maxJumpHeight * -3.0f * gravity);
+            animator.SetBool("isJumping", false);
+            animator.SetBool("isGrounded", true);
+            animator.SetBool("isFalling", false);
         }
-        // Handle gravtity
-        gravityVector.y += gravity * Time.deltaTime;
-        charCon.Move(gravityVector * Time.deltaTime);
-        if(charCon.isGrounded == true && gravityVector.y < 0)
+        else
+            animator.SetBool("isGrounded", false);
+        
+        // rotate with the camera
+        direction = Quaternion.AngleAxis(cameraTransform.rotation.eulerAngles.y, Vector3.up) * direction;
+        
+        //Runnig
+        if (direction.magnitude > 0.05f)
         {
-            gravityVector.y = -1f;
+            gameObject.transform.forward = direction;
+            animator.SetBool("isRunning", true);
+        }
+        else
+            animator.SetBool("isRunning", false);
+        
+        //Jump
+        if (controller.isGrounded && Input.GetButtonDown("Jump"))
+        {
+            directionY = jumpSpeed;
+            animator.SetBool("isJumping", true);
         }
 
-        // Repeat in case of falling
-        if(transform.position.y < -30)
+        directionY -= gravity * Time.deltaTime;
+
+        direction.y = directionY;
+
+        controller.Move(direction * speed * Time.deltaTime);
+
+        if (transform.position.y < -50)
         {
-            transform.position = new Vector3 (0, 30, 0);
+            transform.position = new Vector3(0f, 40f, 0f);
+        }
+
+        if (transform.position.y < -5)
+        {
+            animator.SetBool("isFalling", true);
         }
     }
 }

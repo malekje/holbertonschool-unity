@@ -1,24 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class CutsceneController : MonoBehaviour
 {
-    public Camera mainCamera;
-    public GameObject player;
-    public Canvas timer;
+    public GameObject Player;
+    public GameObject Camera;
+    public GameObject Timer;
+
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        StartCoroutine(Switch());
     }
 
-    public void InitGameStarter()
+    IEnumerator Switch()
     {
-        mainCamera.gameObject.SetActive(true);
-        timer.gameObject.SetActive(true);
-        player.GetComponent<PlayerController>().enabled = true;
-        this.gameObject.SetActive(false);
+        yield return new WaitForSeconds(4.0f);
+        Camera.SetActive(true);
+        Timer.SetActive(true);
+        gameObject.SetActive(false);
+        Player.GetComponent<PlayerController>().enabled = true;
     }
 }

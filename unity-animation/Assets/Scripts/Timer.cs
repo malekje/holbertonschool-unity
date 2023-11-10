@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,47 +5,28 @@ using UnityEngine.UI;
 
 public class Timer : MonoBehaviour
 {
+    public Text TimerText;
+    private float timer;
+    public Text FinalTime;
     // Start is called before the first frame update
-
-    private DateTime startTime;
-    float time = 0f;
-    public Text timeText;
-    private bool runTimer = false;
-    private bool finished = false;
-    
-    
     void Start()
     {
-        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (runTimer && !finished)
-        {
-            time += Time.deltaTime;
-        }
-        // Add a function here
-        printTimer(time);
+        timer += Time.deltaTime;
+        int minutes = Mathf.FloorToInt(timer / 60F);
+        int seconds = Mathf.FloorToInt(timer % 60F);
+        int milliseconds = Mathf.FloorToInt((timer * 100F) % 100F);
+        TimerText.text = minutes.ToString("00") + ":" + seconds.ToString("00") + "." + milliseconds.ToString("00");
+        Win();
     }
 
-    public void StartTimer()
+    //
+    public void Win()
     {
-        runTimer = true;
-    }
-
-    public void StopTimer()
-    {
-        runTimer = false;
-        finished = true;
-    }
-
-    public void printTimer(float time)
-    {
-        float sec = time % 60;
-        float min = (time / 60) % 60;
-        float h = time / 3600;
-        timeText.text = $"{h,0:00}:{min,0:00}.{sec,0:00}";
+        FinalTime.text = TimerText.text;
     }
 }

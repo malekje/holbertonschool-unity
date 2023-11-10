@@ -2,44 +2,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System;
+using UnityEngine.EventSystems;
 
-/// <summary>
-/// Main menue
-/// </summary>
 public class MainMenu : MonoBehaviour
 {
-    /// <summary>
-    /// Method that seleccts level
-    /// </summary>
-    /// <param name="level">level number</param>
+    // Load scenes when pressing buttons
     public void LevelSelect(int level)
     {
-        SceneManager.LoadScene(level);
+        string name = EventSystem.current.currentSelectedGameObject.name;
+        if (name == "Level01")
+            SceneManager.LoadScene("Level01");
+        else if (name == "Level02")
+            SceneManager.LoadScene("Level02");
+        else if (name == "Level03")
+            SceneManager.LoadScene("Level03");
     }
 
-    /// <summary>
-    /// Method that enters options menue
-    /// </summary>
+    //
     public void Options()
     {
-        SceneManager.LoadSceneAsync(4);
-    }
-
-    /// <summary>
-    /// Method that exits game
-    /// </summary>
-    public void Exit()
-    {
-        Debug.Log("Exited");
-    }
-
-    /// <summary>
-    /// Method that save loaded scene
-    /// </summary>
-    public void SaveLoadedScene()
-    {
-        int currentScene = SceneManager.GetActiveScene().buildIndex;
-        PlayerPrefs.SetInt("previous", currentScene);
+        string name = EventSystem.current.currentSelectedGameObject.name;
+        if (name == "OptionsButton")
+        {
+            SceneManager.LoadScene("Options");
+            PlayerPrefs.SetString("prevScene", "MainMenu");
+        }
+        else if (name == "ExitButton")
+        {
+            Application.Quit();
+            Debug.Log("Exited");
+        }
     }
 }
