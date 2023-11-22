@@ -1,15 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CutsceneController : MonoBehaviour
 {
+
     public GameObject Player;
     public GameObject Camera;
     public GameObject Timer;
 
-
-    // Start is called before the first frame update
+    // Update is called once per frame
     void Start()
     {
         StartCoroutine(Switch());
@@ -17,7 +18,7 @@ public class CutsceneController : MonoBehaviour
 
     IEnumerator Switch()
     {
-        yield return new WaitForSeconds(4.0f);
+        yield return new WaitForSeconds(5.0f);
         Camera.SetActive(true);
         Timer.SetActive(true);
         gameObject.SetActive(false);

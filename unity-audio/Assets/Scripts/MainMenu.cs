@@ -23,10 +23,7 @@ public class MainMenu : MonoBehaviour
     {
         string name = EventSystem.current.currentSelectedGameObject.name;
         if (name == "OptionsButton")
-        {
             SceneManager.LoadScene("Options");
-            PlayerPrefs.SetString("prevScene", "MainMenu");
-        }
         else if (name == "ExitButton")
         {
             Application.Quit();

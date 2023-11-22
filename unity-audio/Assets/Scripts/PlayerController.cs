@@ -9,17 +9,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float gravity = 9f;
     [SerializeField]
-    private float jumpSpeed = 5f;
-
+    private float jumpSpeed = 3.5f;
     [SerializeField]
-    Transform cameraTransform;
+    private float doubleJumpMultiplier = 0.5f;
 
-    public Animator animator;
 
     private CharacterController controller;
 
     private float directionY;
 
+    private bool canDoubleJump = false;
 
     // Start is called before the first frame update
     void Start()
@@ -37,30 +36,18 @@ public class PlayerController : MonoBehaviour
 
         if (controller.isGrounded)
         {
-            animator.SetBool("isJumping", false);
-            animator.SetBool("isGrounded", true);
-            animator.SetBool("isFalling", false);
-        }
-        else
-            animator.SetBool("isGrounded", false);
-        
-        // rotate with the camera
-        direction = Quaternion.AngleAxis(cameraTransform.rotation.eulerAngles.y, Vector3.up) * direction;
-        
-        //Runnig
-        if (direction.magnitude > 0.05f)
+            canDoubleJump = true;
+            if (Input.GetButtonDown("Jump"))
+            {
+                directionY = jumpSpeed;
+            }
+        } else
         {
-            gameObject.transform.forward = direction;
-            animator.SetBool("isRunning", true);
-        }
-        else
-            animator.SetBool("isRunning", false);
-        
-        //Jump
-        if (controller.isGrounded && Input.GetButtonDown("Jump"))
-        {
-            directionY = jumpSpeed;
-            animator.SetBool("isJumping", true);
+            if (Input.GetButtonDown("Jump") && canDoubleJump)
+            {
+                directionY = jumpSpeed * doubleJumpMultiplier;
+                canDoubleJump = false;
+            }
         }
 
         directionY -= gravity * Time.deltaTime;
@@ -69,14 +56,10 @@ public class PlayerController : MonoBehaviour
 
         controller.Move(direction * speed * Time.deltaTime);
 
-        if (transform.position.y < -50)
+        if(transform.position.y < -50)
         {
             transform.position = new Vector3(0f, 40f, 0f);
         }
-
-        if (transform.position.y < -5)
-        {
-            animator.SetBool("isFalling", true);
-        }
+        
     }
 }
